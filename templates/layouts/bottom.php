@@ -10,7 +10,7 @@
                 </ul>
             </nav>
             <div class="copyright ml-auto">
-                Copyright &copy; 2021, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.htd-official.com">HTD</a>
+                Copyright &copy; 2022, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.htd-official.com">HTD</a>
             </div>				
         </div>
     </footer>
@@ -58,6 +58,16 @@
 	<!-- Atlantis DEMO methods, don't include it in your project! -->
 	<script src="<?=asset('assets/js/setting-demo.js')?>"></script>
 	<script src="<?=asset('assets/js/demo.js')?>"></script>
+	<?php if(startWith(get_route(),'posts')): ?>
+	<script src="https://cdn.tiny.cloud/1/rsb9a1wqmvtlmij61ssaqj3ttq18xdwmyt7jg23sg1ion6kn/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+	<script>
+	tinymce.init({
+      selector: 'textarea',
+      plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+      toolbar_mode: 'floating',
+    });
+	</script>
+	<?php endif ?>
 	<script>
 		$('.datatable-crud').dataTable({
 			processing: true,

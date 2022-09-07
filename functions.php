@@ -81,10 +81,12 @@ function generated_menu($user_id)
                 $allowed = true;
                 $start_route = str_replace('/index','',$submenu);
                 if(!$active)
-                    $active = startWith($r, $start_route)||(isset($_GET['table'])&&$_GET['table']==$key);;
+                {
+                    $active = startWith($r, $start_route)||(isset($_GET['table'])&&$_GET['table']==$key);
+                }
                 $dropdown .= '<li class="'.(startWith($r, $start_route)?'active':'').'">
                                 <a href="'.routeTo().$submenu.'">
-                                    <span class="sub-item">'.ucwords($label).'</span>
+                                    <span class="sub-item">'.ucwords(__($label)).'</span>
                                 </a>
                             </li>';
             }
@@ -92,7 +94,7 @@ function generated_menu($user_id)
             $dropdown = '<li class="nav-item '.($active?'active submenu':'').'">
                             <a data-toggle="collapse" href="#'.$key.'" aria-expanded="'.($active?'true':'').'">
                                 <i class="'.$icon[$key].'"></i>
-                                <p>'.ucwords($key).'</p>
+                                <p>'.ucwords(__($key)).'</p>
                                 <span class="caret"></span>
                             </a>
                             <div class="collapse '.($active?'show':'').'" id="'.$key.'">
@@ -108,11 +110,14 @@ function generated_menu($user_id)
         {
             if($user_id != 'guest' && !is_allowed($route,$user_id)) continue;
             $start_route = str_replace('/index','',$route);
-            $active = startWith($r, $start_route)||(isset($_GET['table'])&&$_GET['table']==$key);;
+            if(isset($_GET['table']) && $_GET['table'] == 'posts')
+                $active = startWith($r, $start_route)||(isset($_GET['type_as'])&&$_GET['type_as']==$key);
+            else
+                $active = startWith($r, $start_route)||(isset($_GET['table'])&&$_GET['table']==$key);;
             $generated .= '<li class="nav-item '.($active?'active':'').'">
                                 <a href="'.routeTo().$route.'">
                                     <i class="'.$icon[$key].'"></i>
-                                    <p>'.ucwords($key).'</p>
+                                    <p>'.ucwords(__($key)).'</p>
                                 </a>
                             </li>';
         }
@@ -551,4 +556,109 @@ function get_route_path($path, $params)
     $pretty = config('pretty_url');
     $fullpath = $path . ($pretty ? '?' : '&') . http_build_query($params);
     return $fullpath;
+}
+
+function mime_icon_name($mime)
+{
+    $mimet = array( 
+        'txt' => 'text/plain',
+        'htm' => 'text/html',
+        'html' => 'text/html',
+        'php' => 'text/html',
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'swf' => 'application/x-shockwave-flash',
+        'flv' => 'video/x-flv',
+
+        // images
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'ico' => 'image/vnd.microsoft.icon',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+
+        // archives
+        'file-archive' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        'exe' => 'application/x-msdownload',
+        'msi' => 'application/x-msdownload',
+        'cab' => 'application/vnd.ms-cab-compressed',
+
+        // audio/video
+        'mp3' => 'audio/mpeg',
+        'qt' => 'video/quicktime',
+        'mov' => 'video/quicktime',
+        'video' => 'video/mp4',
+
+        // adobe
+        'file-pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+
+        // ms office
+        'doc' => 'application/msword',
+        'rtf' => 'application/rtf',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'docx' => 'application/msword',
+        'xlsx' => 'application/vnd.ms-excel',
+        'pptx' => 'application/vnd.ms-powerpoint',
+
+
+        // open office
+        'odt' => 'application/vnd.oasis.opendocument.text',
+        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+    );
+
+    $key = array_search($mime, $mimet);
+    return $key;
+}
+
+function slug($text, $divider = '-')
+{
+  // replace non letter or digits by divider
+  $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+
+  // transliterate
+  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+  // remove unwanted characters
+  $text = preg_replace('~[^-\w]+~', '', $text);
+
+  // trim
+  $text = trim($text, $divider);
+
+  // remove duplicate divider
+  $text = preg_replace('~-+~', $divider, $text);
+
+  // lowercase
+  $text = strtolower($text);
+
+  if (empty($text)) {
+    return 'n-a';
+  }
+
+  return $text;
+}
+
+function templates()
+{
+    return [
+        'default' => 'default.php',
+        'contact' => 'contact.php',
+        'berita' => 'berita.php',
+        'pegawai' => 'pegawai.php',
+        'profil' => 'profil.php',
+        'visi-misi' => 'visi-misi.php',
+    ];
 }

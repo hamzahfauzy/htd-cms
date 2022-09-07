@@ -4,12 +4,18 @@
             <div class="page-inner py-5">
                 <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                     <div>
-                        <h2 class="text-white pb-2 fw-bold"><?=_ucwords(__($table))?></h2>
-                        <h5 class="text-white op-7 mb-2">Memanajemen data <?=_ucwords(__($table))?></h5>
+                        <h2 class="text-white pb-2 fw-bold"><?=_ucwords(__(isset($_GET['type_as']) ? $_GET['type_as'] : $table))?></h2>
+                        <h5 class="text-white op-7 mb-2">Memanajemen data <?=_ucwords(__(isset($_GET['type_as']) ? $_GET['type_as'] : $table))?></h5>
                     </div>
                     <div class="ml-md-auto py-2 py-md-0">
+                        <?php if($table == 'posts'): ?>
+                        <?php if(is_allowed(get_route_path('posts/create',['type_as'=>$_GET['type_as']]),auth()->user->id)): ?>
+                            <a href="<?=routeTo('posts/create',['type_as'=>$_GET['type_as']])?>" class="btn btn-secondary btn-round">Buat <?=_ucwords(__(isset($_GET['type_as']) ? $_GET['type_as'] : $table))?></a>
+                        <?php endif ?>
+                        <?php else: ?>
                         <?php if(is_allowed(get_route_path('crud/create',['table'=>$table]),auth()->user->id)): ?>
                             <a href="<?=routeTo('crud/create',['table'=>$table])?>" class="btn btn-secondary btn-round">Buat <?=_ucwords(__($table))?></a>
+                        <?php endif ?>
                         <?php endif ?>
                     </div>
                 </div>
@@ -24,7 +30,7 @@
                             <div class="alert alert-success"><?=$success_msg?></div>
                             <?php endif ?>
                             <div class="table-responsive table-hover table-sales">
-                                <table class="table datatable-crud">
+                                <table class="table datatable-crud" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th width="20px">#</th>
@@ -35,7 +41,7 @@
                                                 {
                                                     $label = $field['label'];
                                                 }
-                                                $label = _ucwords($label);
+                                                $label = _ucwords(__($label));
                                             ?>
                                             <th><?=$label?></th>
                                             <?php endforeach ?>
