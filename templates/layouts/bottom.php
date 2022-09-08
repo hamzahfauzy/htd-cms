@@ -65,6 +65,9 @@
       selector: 'textarea',
       plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
       toolbar_mode: 'floating',
+	  relative_urls : false,
+	  remove_script_host : false,
+	  convert_urls : true,
     });
 	</script>
 	<?php endif ?>
