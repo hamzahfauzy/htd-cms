@@ -31,8 +31,11 @@ class Database
         $this->query = "INSERT INTO $table";
         $fields = implode(',',array_keys($val));
         $vals = array_values($val);
-        $vals = array_map(function($valss){
-            return preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $valss);
+        $conn = $this->connection;
+        $vals = array_map(function($valss) use ($conn){
+            $valss = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $valss);
+            $valss = $conn->real_escape_string($valss);
+            return $valss;
         }, $vals);
         $values = "'".implode("','",$vals)."'";
         $this->query .= "($fields)VALUES($values)";
